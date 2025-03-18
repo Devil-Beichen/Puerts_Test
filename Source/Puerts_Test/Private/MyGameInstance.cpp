@@ -6,7 +6,23 @@
 void UMyGameInstance::OnStart()
 {
 	Super::OnStart();
-	GameScript = MakeShared<puerts::FJsEnv>();
+	if (bDebugMode)
+	{
+		GameScript = MakeShared<puerts::FJsEnv>(
+			std::make_unique<puerts::DefaultJSModuleLoader>(TEXT("JavaScript")),
+			std::make_shared<puerts::FDefaultLogger>(),
+			8080
+		);
+		if (bWaitForDebugger)
+		{
+			GameScript->WaitDebugger();
+		}
+	}
+	else
+	{
+		GameScript = MakeShared<puerts::FJsEnv>();
+	}
+
 	GameScript->Start(TEXT("MainGame"), TArray<TPair<FString, UObject*>>());
 }
 
