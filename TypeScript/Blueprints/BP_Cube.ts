@@ -13,21 +13,21 @@ const jsClass = blueprint.tojs<typeof UE.Game.Blueprints.BP_Cube.BP_Cube_C>(ucla
 interface TS_Cube extends UE.Game.Blueprints.BP_Cube.BP_Cube_C {
 }
 
-// 创建一个继承ts的本体类
-class ts_Cube extends jsClass implements TS_Cube {
+// 创建一个继承ts的本体类   export 导出
+export class ts_Cube extends jsClass implements TS_Cube {
 
 
     StartRotation: boolean;
 
     // 开始函数
-    ReceiveBeginPlay(): void {
+    override ReceiveBeginPlay(): void {
         console.log("这是来自于ts_Cube ReceiveBeginPlay 的消息");
 
         this.OnOverlap();
     }
 
     // Tick函数
-    ReceiveTick(DeltaSeconds: number): void {
+    override ReceiveTick(DeltaSeconds: number): void {
         if (this.StartRotation) {
             this.K2_AddActorWorldRotation(new UE.Rotator(0, 30 * DeltaSeconds, 0), false, undefined, false);
         }
@@ -35,7 +35,7 @@ class ts_Cube extends jsClass implements TS_Cube {
     }
 
     // 点击函数
-    Click(): void {
+    public override Click(): void {
         KismetSystemLibrary.PrintString(this.GetWorld(), "你点你妈呢", true, true, new UE.LinearColor(1, 0, 0, 1), 2.0);
         this.StartRotation = !this.StartRotation;
     }
