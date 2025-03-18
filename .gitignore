@@ -23,3 +23,5 @@ IOS/
 /Benchmark
 /Plugins/UnLua/Source/UnLuaDefaultParamCollectorUbtPlugin/obj
 /Plugins/UnLua/Source/UnLuaDefaultParamCollectorUbtPlugin/UnLuaDefaultParamCollectorUbtPlugin.ubtplugin.csproj.props
+/Plugins/Puerts/ThirdParty/v8_10.6.194
+/Plugins/Puerts/Source/CSharpParamDefaultValueMetas/obj
