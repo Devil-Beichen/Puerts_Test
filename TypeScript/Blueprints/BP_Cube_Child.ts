@@ -1,6 +1,6 @@
 ﻿// BP_Cube_Child.ts
 import * as UE from "ue";
-import {blueprint} from "puerts";
+import {$Nullable, blueprint} from "puerts";
 import mixin from "../mixin";       // 引入mixin
 import {BP_Cube} from "./BP_Cube";  // 先导入父类(有继承关系)
 
@@ -16,9 +16,9 @@ export interface BP_CubeChild extends UE.Game.Blueprints.BP_Cube_Child.BP_Cube_C
 export class BP_CubeChild extends BP_Cube implements BP_CubeChild {
 
     ReceiveBeginPlay(): void {
-        // super.ReceiveBeginPlay(); // 调用蓝图父类方法
+        super.ReceiveBeginPlay(); // 调用蓝图父类方法
         console.log("我是子类");
-        this.OnOverlap();
+        // this.Cube.OnComponentBeginOverlap.Add((...args) => this.TS_OnOverlap(...args));
     }
 
     Click(): void {
@@ -30,5 +30,19 @@ export class BP_CubeChild extends BP_Cube implements BP_CubeChild {
     Click2(): void {
         UE.KismetSystemLibrary.PrintString(this.GetWorld(), "我就点我就点", true, true, new UE.LinearColor(0, 1, 0, 1), 2.0);
         this.StartRotation = !this.StartRotation;
+    }
+
+    protected TS_OnOverlap(OverlappedComponent: $Nullable<UE.PrimitiveComponent>, OtherActor: $Nullable<UE.Actor>, OtherComp: $Nullable<UE.PrimitiveComponent>, OtherBodyIndex: number, bFromSweep: boolean, SweepResult: UE.HitResult) {
+        // super.TS_OnOverlap(OverlappedComponent, OtherActor, OtherComp, OtherBodyIndex, bFromSweep, SweepResult);
+        let Name = OtherActor.GetName();
+        let MyName = this.GetName();
+        UE.KismetSystemLibrary.PrintString(
+            this,
+            `我是 ${MyName} 我与 : ${Name}重叠了！！！ `, // 类似于C++的  "%s",*otherActor.GetName()
+            true,
+            true,
+            new UE.LinearColor(0, 1, 0, 1),
+            2.0
+        );
     }
 }

@@ -1,6 +1,6 @@
 // BP_Cube.ts
 import * as UE from "ue";
-import {blueprint} from "puerts";
+import {$Nullable, blueprint} from "puerts";
 import mixin from "../mixin"; // 引入mixin
 
 // 加载蓝图路径
@@ -20,7 +20,8 @@ export class BP_Cube implements BP_Cube {
     ReceiveBeginPlay(): void {
         console.log("这是来自于ts_Cube ReceiveBeginPlay 的消息");
 
-        this.OnOverlap();
+        // this.Cube.OnComponentBeginOverlap.Add(this.TS_OnOverlap()) 这种绑定会报错 需要使用箭头函数，因为获取this的this是BP_Cube_C 推荐使用下面的方式
+        this.Cube.OnComponentBeginOverlap.Add((...args) => this.TS_OnOverlap(...args));
     }
 
     // Tick函数
@@ -37,19 +38,17 @@ export class BP_Cube implements BP_Cube {
         this.StartRotation = !this.StartRotation;
     }
 
-    // 碰撞处理函数
-    protected OnOverlap(): void {
-        this.Cube.OnComponentBeginOverlap.Add((overlappedComp, otherActor, otherComp, otherBodyIndex, fromSweep, sweepResult) => {
-
-            let Name = otherActor.GetName();
-            UE.KismetSystemLibrary.PrintString(
-                this.GetWorld(),
-                `我是与:${Name}重叠了！！！ `, // 类似于C++的  "%s",*otherActor.GetName()
-                true,
-                true,
-                new UE.LinearColor(1, 0, 0, 1),
-                2.0
-            );
-        });
+    // 重叠处理函数
+    protected TS_OnOverlap(OverlappedComponent: $Nullable<UE.PrimitiveComponent>, OtherActor: $Nullable<UE.Actor>, OtherComp: $Nullable<UE.PrimitiveComponent>, OtherBodyIndex: number, bFromSweep: boolean, SweepResult: UE.HitResult) {
+        let Name = OtherActor.GetName();
+        let MyName = this.GetName();
+        UE.KismetSystemLibrary.PrintString(
+            this,
+            `我是 ${MyName} 我与 : ${Name}重叠了！！！ `, // 类似于C++的  "%s",*otherActor.GetName()
+            true,
+            true,
+            new UE.LinearColor(1, 0, 0, 1),
+            2.0
+        );
     }
 }
