@@ -1,16 +1,18 @@
-import * as UE from 'ue';
-import {blueprint} from 'puerts';
+// BP_Cube.ts
+import * as UE from "ue";
+import {blueprint} from "puerts";
+import mixin from "../mixin"; // 引入mixin
 
-// 加载子类蓝图（转换成js类）
-const Uclass = UE.Class.Load("/Game/Blueprints/BP_Cube.BP_Cube_C");
-const JsClass = blueprint.tojs<typeof UE.Game.Blueprints.BP_Cube.BP_Cube_C>(Uclass);
+// 加载蓝图路径
+const AssetPath = "/Game/Blueprints/BP_Cube.BP_Cube_C";
 
 // 创建一个继承ts类的接口（用来类型提示）
-interface TS_Cube extends UE.Game.Blueprints.BP_Cube.BP_Cube_C {
+export interface BP_Cube extends UE.Game.Blueprints.BP_Cube.BP_Cube_C {
 }
 
-// 创建一个继承ts的本体类   export 导出  extends 扩展（可以理解成继承哪一个类）  implements   实现类型提示
-export class BP_Cube extends JsClass implements TS_Cube {
+// 创建一个继承ts的本体类    implements   实现类型提示
+@mixin(AssetPath, true)
+export class BP_Cube implements BP_Cube {
 
     StartRotation: boolean;
 
@@ -30,7 +32,7 @@ export class BP_Cube extends JsClass implements TS_Cube {
     }
 
     // 点击函数
-    public override Click(): void {
+    Click(): void {
         UE.KismetSystemLibrary.PrintString(this.GetWorld(), "你点你妈呢", true, true, new UE.LinearColor(1, 0, 0, 1), 2.0);
         this.StartRotation = !this.StartRotation;
     }
@@ -51,6 +53,3 @@ export class BP_Cube extends JsClass implements TS_Cube {
         });
     }
 }
-
-// 让编辑器识别！！！非常重要！！！
-blueprint.mixin(JsClass, BP_Cube);
