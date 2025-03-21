@@ -10,8 +10,14 @@ const AssetPath = "/Game/Blueprints/BP_Cube.BP_Cube_C";
 export interface BP_Cube extends UE.Game.Blueprints.BP_Cube.BP_Cube_C {
 }
 
-// 创建一个继承ts的本体类    implements   实现类型提示
-@mixin(AssetPath, true)
+/**
+ * 创建一个继承ts的本体类    implements   实现类型提示
+ * <>里面的类型默认情况下不需要写，假如出现
+ * 路径：UE.Game.A.BP_Cube.BP_Cube_C     除了路径不同，其他都一样最好写上，以防识别出错
+ * 路径：UE.Game.B.BP_Cube.BP_Cube_C
+ * @param AssetPath - 蓝图路径
+ */
+@mixin<typeof UE.Game.Blueprints.BP_Cube.BP_Cube_C>(AssetPath)
 export class BP_Cube implements BP_Cube {
 
     StartRotation: boolean;

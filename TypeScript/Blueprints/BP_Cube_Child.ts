@@ -12,7 +12,7 @@ export interface BP_CubeChild extends UE.Game.Blueprints.BP_Cube_Child.BP_Cube_C
 }
 
 // export 导出  直接继承JS基类  extends 扩展（可以理解成继承哪一个类）  implements  实现类型提示
-@mixin(AssetPath, true)
+@mixin(AssetPath)
 export class BP_CubeChild extends BP_Cube implements BP_CubeChild {
 
     ReceiveBeginPlay(): void {
