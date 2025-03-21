@@ -36,13 +36,27 @@ export class BP_CubeChild extends BP_Cube implements BP_CubeChild {
         // super.TS_OnOverlap(OverlappedComponent, OtherActor, OtherComp, OtherBodyIndex, bFromSweep, SweepResult);
         let Name = OtherActor.GetName();
         let MyName = this.GetName();
-        UE.KismetSystemLibrary.PrintString(
-            this,
-            `我是 ${MyName} 我与 : ${Name}重叠了！！！ `, // 类似于C++的  "%s",*otherActor.GetName()
-            true,
-            true,
-            new UE.LinearColor(0, 1, 0, 1),
-            2.0
-        );
+        
+        if (OtherActor instanceof BP_Cube) { // 正确的类型检查   C++中的  Cast<BP_Cube>(OtherActor)
+            UE.KismetSystemLibrary.PrintString(
+                this,
+                `我是 ${MyName} 我与 : ${Name}重叠了！！！ `, // 类似于C++的  "%s",*otherActor.GetName()
+                true,
+                true,
+                new UE.LinearColor(0, 1, 0, 1),
+                2.0
+            );
+        } else {
+            UE.KismetSystemLibrary.PrintString(
+                this,
+                `重叠了！！！ `, // 类似于C++的  "%s",*otherActor.GetName()
+                true,
+                true,
+                new UE.LinearColor(0, 0, 1, 1),
+                2.0
+            );
+        }
+
+
     }
 }
