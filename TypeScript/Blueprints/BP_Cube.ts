@@ -57,4 +57,9 @@ export class BP_Cube implements BP_Cube {
             2.0
         );
     }
+
+    TS_Bigger() {
+        UE.KismetSystemLibrary.PrintString(this.GetWorld(), "我是通过puerts调用的", true, true, new UE.LinearColor(1, 0, 0, 1), 2.0);
+
+    }
 }

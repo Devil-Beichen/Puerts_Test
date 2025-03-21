@@ -33,6 +33,15 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Debug")
 	uint8 bWaitForDebugger : 1;
 
+	// 调用ts函数的代理
+	DECLARE_DYNAMIC_DELEGATE_TwoParams(FCall, FString, FunctionName, UObject*, Uobject);
+	UPROPERTY()
+	FCall FCall;
+
+	// 调用ts函数
+	UFUNCTION(BlueprintCallable)
+	void CallTS(FString FunctionName, UObject* Uobject);
+
 private:
 	// 游戏脚本
 	TSharedPtr<puerts::FJsEnv> GameScript;

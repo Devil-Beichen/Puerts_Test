@@ -23,7 +23,10 @@ void UMyGameInstance::OnStart()
 		GameScript = MakeShared<puerts::FJsEnv>();
 	}
 
-	GameScript->Start(TEXT("MainGame"), TArray<TPair<FString, UObject*>>());
+	// 
+	TArray<TPair<FString, UObject*>> Arguments;
+	Arguments.Add({TEXT("GameInstance"), this});
+	GameScript->Start(TEXT("MainGame"), Arguments);
 }
 
 void UMyGameInstance::Init()
@@ -35,4 +38,10 @@ void UMyGameInstance::Shutdown()
 {
 	Super::Shutdown();
 	GameScript.Reset();
+}
+
+// 调用TS函数
+void UMyGameInstance::CallTS(FString FunctionName, UObject* Uobject)
+{
+	FCall.ExecuteIfBound(FunctionName, Uobject);
 }
