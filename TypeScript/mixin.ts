@@ -27,7 +27,7 @@ import {blueprint} from "puerts";
  */
 export default function mixin<T extends typeof UE.Object>(blueprintPath: string, objectTakeByNative = true) {
     /**
-     * 类装饰器工厂函数
+     * 类装饰器函数
      * @param target 被装饰类的构造函数，要求：
      *   - 必须继承自UE.Object
      *   - 必须合并蓝图基类T的实例特性
