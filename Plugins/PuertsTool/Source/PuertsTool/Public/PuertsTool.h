@@ -23,6 +23,12 @@ private:
 
 	// 添加mixin.ts文件
 	void AddMixinTsFile();
-	
-	
+
+	// 初始化样式
+	void InitStyleSet();
+	// 获取样式
+	static FName GetStyleSetName();
+
+private:
+	static TSharedPtr<FSlateStyleSet> StyleSet;
 };

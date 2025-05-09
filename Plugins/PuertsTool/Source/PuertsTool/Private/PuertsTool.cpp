@@ -13,12 +13,13 @@
 
 #define LOCTEXT_NAMESPACE "FPuertsToolModule"
 
+TSharedPtr<FSlateStyleSet> FPuertsToolModule::StyleSet = nullptr;
 
 void FPuertsToolModule::StartupModule()
 {
 	FBlueprintEditorModule& BlueprintEditorModule = FModuleManager::LoadModuleChecked<FBlueprintEditorModule>("Kismet");
 	TSharedPtr<FExtender> MenuExtender = MakeShareable(new FExtender());
-
+	InitStyleSet();
 	AddMixinTsFile();
 	// 用于检测双击的静态变量
 	static FDateTime LastClickTime;
@@ -72,7 +73,7 @@ void FPuertsToolModule::StartupModule()
 				NAME_None,
 				LOCTEXT("GenerateTemplate", "创建TS文件"),
 				LOCTEXT("GenerateTemplateTooltip", "生成(并检查存在)"), // LOCTEXT("GenerateTemplateTooltip", "单击生成(检查存在),双击强制覆盖"),
-				FSlateIcon()
+				FSlateIcon(GetStyleSetName(), "AddMixinIcon")
 			);
 		})
 	);
@@ -106,9 +107,6 @@ void FPuertsToolModule::HandleButtonClick(bool bForceOverwrite)
 			TArray<FString> stringArray;
 			RightS.ParseIntoArray(stringArray, TEXT("/"), false);
 			FString FileName = stringArray[stringArray.Num() - 1];
-
-			// 调整路径和文件名
-			// RightS = RightS.Replace(TEXT(""), TEXT("")).Replace(*FileName, *(TEXT("") + FileName));
 
 			// 处理模板
 			FString ProcessedContent = ProcessTemplate(TemplateContent, BlueprintPath, FileName);
@@ -148,7 +146,7 @@ void FPuertsToolModule::HandleButtonClick(bool bForceOverwrite)
 
 				/**
 				* 希望检查FPaths::ProjectDir()路径下/TypeScript/MainGame.ts文件
-				* 并在文件未添加import "./ProcessedPath" \n
+				* 并在文件未添加import "./ProcessedPath"; \n
 				*/
 				FString MainGameTsPath = FPaths::Combine(FPaths::ProjectDir(), TEXT("TypeScript"), TEXT("MainGame.ts"));
 				if (FPaths::FileExists(MainGameTsPath))
@@ -156,9 +154,9 @@ void FPuertsToolModule::HandleButtonClick(bool bForceOverwrite)
 					FString MainGameTsContent;
 					if (FFileHelper::LoadFileToString(MainGameTsContent, *MainGameTsPath))
 					{
-						if (!MainGameTsContent.Contains(TEXT("import \"./" + ProcessedPath + "\"")))
+						if (!MainGameTsContent.Contains(TEXT("import \"./" + ProcessedPath + ";\"")))
 						{
-							MainGameTsContent += TEXT("import \"." + ProcessedPath + "\"\n");
+							MainGameTsContent += TEXT("import \"." + ProcessedPath + ";\"\n");
 						}
 					}
 
@@ -254,10 +252,40 @@ void FPuertsToolModule::AddMixinTsFile()
 	}
 }
 
+void FPuertsToolModule::InitStyleSet()
+{
+	if (!StyleSet.IsValid())
+	{
+		StyleSet = MakeShared<FSlateStyleSet>(GetStyleSetName());
+
+		// 获取插件/模块资源路径
+		FString ResourcesDir = FPaths::Combine(FPaths::ProjectPluginsDir(), TEXT("PuertsTool"), TEXT("Resources"));
+
+		// 注册图标
+		StyleSet->Set("AddMixinIcon", new FSlateImageBrush(ResourcesDir / "CreateFilecon.png", FVector2D(40, 40))); // 调整尺寸
+
+		// 注册到Slate系统
+		FSlateStyleRegistry::RegisterSlateStyle(*StyleSet);
+	}
+}
+
+
+FName FPuertsToolModule::GetStyleSetName()
+{
+	static FName StyleSetName(TEXT("MyEditorStyle"));
+	return StyleSetName;
+}
+
 void FPuertsToolModule::ShutdownModule()
 {
 	// This function may be called during shutdown to clean up your module.  For modules that support dynamic reloading,
 	// we call this function before unloading the module.
+
+	if (StyleSet.IsValid())
+	{
+		FSlateStyleRegistry::UnRegisterSlateStyle(*StyleSet);
+		StyleSet.Reset();
+	}
 }
 
 #undef LOCTEXT_NAMESPACE
